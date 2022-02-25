@@ -1,0 +1,22 @@
+{
+  "name": "webpack-tencent-cos",
+  "keywords": [
+    "webpack",
+    "tencent",
+    "cos",
+    "tencent-cos",
+    "webpack-plugin",
+    "oss"
+  ],
+  "description": "webpack-tencent-cos upload assets to tencent cos server",
+  "version": "1.0.4",
+  "main": "index.js",
+  "repository": "https://github.com/liulunsheng/webpack-tencent-cos.git",
+  "author": "liulunsheng",
+  "license": "MIT",
+  "dependencies": {
+    "cos-nodejs-sdk-v5": "^2.11.6",
+    "lodash.isregexp": "^4.0.1",
+    "ora": "^1.3.0"
+  }
+}
