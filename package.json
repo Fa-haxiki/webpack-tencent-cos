@@ -14,6 +14,9 @@
   "repository": "https://github.com/liulunsheng/webpack-tencent-cos.git",
   "author": "liulunsheng",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "cos-nodejs-sdk-v5": "^2.11.6",
     "lodash.isregexp": "^4.0.1",
