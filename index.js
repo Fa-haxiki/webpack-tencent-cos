@@ -4,7 +4,6 @@ const fs = require('fs');
 const COS = require('cos-nodejs-sdk-v5');
 const path = require('path');
 const ora = require('ora');
-const isRegExp = require('lodash.isregexp');
 
 // Constants
 const REGEXP_HASH = /\[hash(?::(\d+))?\]/gi;
