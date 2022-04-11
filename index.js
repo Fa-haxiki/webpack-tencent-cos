@@ -97,7 +97,7 @@ module.exports = class CosPlugin {
                             Bucket: bucket,
                             Region: region,
                             Key: key,
-                            Body: fs.createReadStream(path.resolve(__dirname, fileName)),
+                            Body: fs.createReadStream(fileName),
                             ContentLength: file._size,
                         },
                         function(err, body) {
