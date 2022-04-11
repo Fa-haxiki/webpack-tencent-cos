@@ -17,9 +17,9 @@ const CosPlugin = require("webpack-tencent-cos");
 
 plugins: [
     new CosPlugin({
-      secretId: 'AKID4NRFm45rNcaGgphJhofGbfRwBF2YnlSs',
-      secretKey: 'DBsISMzLQDj00jBMGtGMD0WljQpyrTos',
-      bucket: 'lintcode-react-1256418761',
+      secretId: '********************',
+      secretKey: '********************',
+      bucket: 'lintcode-react-*********',
       region: 'ap-shanghai',
       path: 'react/',
     })

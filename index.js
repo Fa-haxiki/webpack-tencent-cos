@@ -44,13 +44,11 @@ module.exports = class CosPlugin {
     }
 
     apply(compiler) {
-        compiler.plugin('after-emit', (compilation, callback) => {
+        compiler.hooks.afterEmit.tap('CosPlugin', (compilation) => {
             let basePath = path.basename(compiler.outputPath);
             let assets = compilation.assets;
             let hash = compilation.hash;
             let uploadPath = this.options.path || '[hash]';
-            let exclude = isRegExp(this.options.exclude) && this.options.exclude;
-            let include = isRegExp(this.options.include) && this.options.include;
             let batch = this.options.batch || 20;
             let cos = new COS({
                 SecretId: this.options.secretId,
@@ -69,26 +67,14 @@ module.exports = class CosPlugin {
             // Mark finished
             let _finish = err => {
                 spinner.stop();
+                if (err) {
+                    // eslint-disable-next-line no-console
+                    console.log('\n upload fail', err);
+                    return;
+                }
                 // eslint-disable-next-line no-console
                 console.log('\n all files upload success');
-                callback(err);
             };
-
-            // Filter files that should be uploaded
-            filesNames = filesNames.filter(fileName => {
-                let file = assets[fileName] || {};
-
-                // Ignore unemitted files
-                if (!file.emitted) return false;
-
-                // Check excluced files
-                if (exclude && exclude.test(file.existsAt)) return false;
-
-                // Check included files
-                if (include) return include.test(file.existsAt);
-
-                return true;
-            });
 
             totalFiles = filesNames.length;
 
@@ -112,8 +98,8 @@ module.exports = class CosPlugin {
                             Bucket: bucket,
                             Region: region,
                             Key: key,
-                            Body: fs.createReadStream(file.existsAt),
-                            ContentLength: fs.statSync(file.existsAt).size
+                            Body: fs.createReadStream(path.resolve(__dirname, fileName)),
+                            ContentLength: file._size,
                         },
                         function(err, body) {
                             uploadedFiles++;
