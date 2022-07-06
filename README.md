@@ -1,6 +1,7 @@
 ## webpack-tencent-cos
 
-webpack腾讯云COS上传
+CH: webpack腾讯云COS上传
+EN: webpack tencent Cloud Object Storage(COS) plugin
 
 ### Install
 
@@ -19,9 +20,9 @@ plugins: [
     new CosPlugin({
       secretId: '********************',
       secretKey: '********************',
-      bucket: 'lintcode-react-*********',
-      region: 'ap-shanghai',
-      path: 'react/',
+      bucket: '*****************',
+      region: 'xxxx',
+      path: 'xxxxx',
     })
 ]
 ```

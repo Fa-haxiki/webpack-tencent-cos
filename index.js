@@ -5,17 +5,28 @@ const COS = require('cos-nodejs-sdk-v5');
 const path = require('path');
 const ora = require('ora');
 
-// Constants
+/**
+ * @type {RegExp}
+ */
 const REGEXP_HASH = /\[hash(?::(\d+))?\]/gi;
 
-// Uploading progress tip
+/**
+ * @description Uploading progress tip
+ * @param uploaded {number}
+ * @param total {number}
+ * @returns {string}
+ */
 const tip = (uploaded, total) => {
     let percentage = total === 0 ? 0 : Math.round((uploaded / total) * 100);
     return `Uploading to Tencent COS: ${percentage === 0 ? '' : percentage + '% '}${uploaded}/${total} files uploaded`;
 };
 
-// Replace path variable by hash with length
-const withHashLength = replacer => {
+/**
+ * @description Replace path variable by hash with length
+ * @param replacer {function}
+ * @returns {function}
+ */
+const withHashLength = (replacer) => {
     return function(_, hashLength) {
         const length = hashLength && parseInt(hashLength, 10);
         const hash = replacer.apply(this, arguments);
@@ -23,13 +34,19 @@ const withHashLength = replacer => {
     };
 };
 
-// Perform hash replacement
+/**
+ * @description Perform hash replacement
+ * @param value {string|undefined|null}
+ * @param allowEmpty {boolean|undefined}
+ * @returns {function(string): (string|string)}
+ */
 const getReplacer = (value, allowEmpty) => {
     return function(match) {
         // last argument in replacer is the entire input string
         const input = arguments[arguments.length - 1];
         if (value === null || value === undefined) {
-            if (!allowEmpty) throw new Error(`Path variable ${match} not implemented in this context of qn-webpack plugin: ${input}`);
+            if (!allowEmpty)
+                throw new Error(`Path variable ${match} not implemented in this context of qn-webpack plugin: ${input}`);
             return '';
         } else {
             return `${value}`;
@@ -37,12 +54,29 @@ const getReplacer = (value, allowEmpty) => {
     };
 };
 
+/**
+ * @description exports CosPlugin
+ * @type {CosPlugin}
+ */
 module.exports = class CosPlugin {
+    /**
+     * @param options {{
+     *     path: string,
+     *     batch: number,
+     *     secretId: string,
+     *     secretKey: string,
+     *     bucket: string,
+     *     region: string,
+     * }}
+     */
     constructor(options) {
         this.options = Object.assign({}, options);
     }
 
     apply(compiler) {
+        /**
+         * @inheritDoc https://webpack.docschina.org/api/compiler-hooks/#afteremit
+         */
         compiler.hooks.afterEmit.tap('CosPlugin', (compilation) => {
             let basePath = path.basename(compiler.outputPath);
             let assets = compilation.assets;
@@ -63,7 +97,11 @@ module.exports = class CosPlugin {
             let totalFiles = 0;
             let uploadedFiles = 0;
 
-            // Mark finished
+            /**
+             * @description Mark finished
+             * @param err {string}
+             * @private
+             */
             let _finish = err => {
                 spinner.stop();
                 if (err) {
@@ -84,7 +122,11 @@ module.exports = class CosPlugin {
                 color: 'green'
             }).start();
 
-            // Perform upload to cos
+            /**
+             * @description Perform upload to cos
+             * @param fileName {string}
+             * @returns {Promise<unknown>}
+             */
             const performUpload = function(fileName) {
                 let file = assets[fileName] || {};
                 fileName = basePath + '/' + fileName.replace(/\\/g, '/');
@@ -112,7 +154,11 @@ module.exports = class CosPlugin {
                 });
             };
 
-            // Execute stack according to `batch` option
+            /**
+             * @description Execute stack according to `batch` option
+             * @param err
+             * @returns {Promise<never>|Promise<unknown>|Promise<void>}
+             */
             const execStack = function(err) {
                 if (err) {
                     // eslint-disable-next-line no-console
@@ -120,7 +166,9 @@ module.exports = class CosPlugin {
                     return Promise.reject(err);
                 }
 
-                // Get 20 files
+                /**
+                 * @description Get 20|{batch} files
+                 */
                 let _files = filesNames.splice(0, batch);
 
                 if (_files.length) {

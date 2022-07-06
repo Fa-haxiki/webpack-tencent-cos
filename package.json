@@ -9,7 +9,7 @@
     "oss"
   ],
   "description": "webpack-tencent-cos upload assets to tencent cos server",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "main": "index.js",
   "repository": "https://github.com/Fa-haxiki/webpack-tencent-cos.git",
   "author": "liulunsheng",
