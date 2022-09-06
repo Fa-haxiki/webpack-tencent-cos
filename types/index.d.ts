@@ -5,6 +5,7 @@ type CosPluginOptions = {
   secretKey: string;
   bucket: string;
   region: string;
+  setCosPath: (filePath: string) => string;
 }
 
 declare class CosPlugin {

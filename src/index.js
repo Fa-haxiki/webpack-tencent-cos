@@ -67,6 +67,7 @@ module.exports = class CosPlugin {
      *     secretKey: string,
      *     bucket: string,
      *     region: string,
+     *     setCosPath: (filePath: string) => string,
      * }}
      */
     constructor(options) {
@@ -96,6 +97,7 @@ module.exports = class CosPlugin {
             let filesNames = Object.keys(assets);
             let totalFiles = 0;
             let uploadedFiles = 0;
+            let setCosPath = this.options.setCosPath;
 
             /**
              * @description Mark finished
@@ -134,11 +136,14 @@ module.exports = class CosPlugin {
 
                 return new Promise((resolve, reject) => {
                     let begin = Date.now();
+                    const finalKey = setCosPath ? setCosPath(key) : key;
+                    // eslint-disable-next-line no-console
+                    console.log('uploadPath=', finalKey);
                     cos.putObject(
                         {
                             Bucket: bucket,
                             Region: region,
-                            Key: key,
+                            Key: finalKey,
                             Body: fs.createReadStream(fileName),
                             ContentLength: file._size,
                         },
