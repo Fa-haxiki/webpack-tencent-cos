@@ -109,7 +109,7 @@ module.exports = class CosPlugin {
                 if (err) {
                     // eslint-disable-next-line no-console
                     console.log('\n upload fail', err);
-                    return;
+                    throw new Error('upload fail, 上传失败了');
                 }
                 // eslint-disable-next-line no-console
                 console.log('\n all files upload success');
